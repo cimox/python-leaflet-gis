@@ -6,17 +6,42 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+
+    <!-- materialize -->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+
 </head>
 <body>
 <div id="title">
-    <h1>Turisticka mapa Slovenska</h1>
+    <h3>Turisticka mapa Slovenska</h3>
 </div>
 
-<div id="mapid"></div>
+<div class="buttons">
+    <a class="waves-effect waves-light btn enabled" id="btn-shelters">Show shelters</a>
+</div>
+<div id="map-view"></div>
 
 <script>
-    initMap();
+    $(document).ready(function () {
+        var map = initMap();
+        $('a#btn-shelters').click(function () {
+            if ($(this).hasClass('enabled') == true) {
+                sheltersLayer = getShelters(map);
+                $(this).toggleClass('enabled disabled');
+                $(this).text('hide shelters');
+            }
+            else if ($(this).hasClass('disabled') == true) {
+                map.removeLayer(sheltersLayer);
+                $(this).toggleClass('enabled disabled');
+                $(this).text('show shelters');
+            }
+        });
+    });
 </script>
 </body>
 </html>
