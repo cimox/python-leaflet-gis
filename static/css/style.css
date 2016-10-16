@@ -1,0 +1,15 @@
+#mapid {
+    width: 100%;
+    height: 550px;
+    margin-top: 50px;
+}
+
+h1 {
+    font-size: 20px;
+    font-family: "Helvetica Neue", sans-serif;
+    margin: auto;
+}
+
+#title {
+    text-align: center;
+}
