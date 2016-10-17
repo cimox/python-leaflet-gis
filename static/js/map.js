@@ -80,4 +80,15 @@ $(function () {
         });
     };
 
+    findNearby = function () {
+        console.log('find nearby tracks');
+        $.getJSON('/nearby/48.7392252/18.9908871/10000/', function (geojson) {
+            nearbyTracksLayer = L.geoJson(geojson, {
+
+            });
+            nearbyTracksLayer.addTo(map);
+
+            return nearbyTracksLayer;
+        });
+    };
 });

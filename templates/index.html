@@ -64,6 +64,22 @@
         map.addControl(new btnLocateMe());
         $('i.material-icons.locate-me').text('my_location');
 
+        var btnNearby = L.Control.extend({
+            options: {
+                position: 'topright'
+            },
+            onAdd: function (map) {
+                var button = L.DomUtil.create('a', 'center-align waves-effect waves-light btn enabled');
+                button.text = 'nearby';
+                button.style.width = '200px';
+
+                button.onclick = function () {
+                    findNearby();
+                };
+                return button;
+            }
+        });
+        map.addControl(new btnNearby());
     });
 </script>
 </body>
