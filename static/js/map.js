@@ -8,12 +8,14 @@ $(function () {
         console.log('Map is ready.');
         map = L.map('map-view', {
             center: [48.7392252, 18.9908871],
-            zoom: 10
+            zoom: 11
         });
 
         L.tileLayer(
             'https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2ltb3giLCJhIjoiY2lnMmR5cTViMDBxanZza2hnMW52bnE4cCJ9.69Gz4ubptFwygdY_zA7c3Q'
         ).addTo(map);
+
+        L.marker([48.7392252, 18.9908871]).addTo(map);
 
         map.on('locationfound', onLocationFound);
         map.on('locationerror', onLocationError);
@@ -21,11 +23,11 @@ $(function () {
         return map;
     };
 
-    var elem = null;
+    var elemLocation = null;
     locate = function (e) {
-        elem = e;
-        elem.find('i').text('loop');
-        elem.toggleClass('enabled disabled');
+        elemLocation = e;
+        elemLocation.find('i').text('loop');
+        elemLocation.toggleClass('enabled disabled');
         map.locate({setView: true, maxZoom: 16});
     };
 
@@ -36,12 +38,11 @@ $(function () {
             .bindPopup("You're within " + radius + " meters from this point").openPopup();
         L.circle(e.latlng, radius).addTo(map);
 
-        if (elem != null) {
-            elem.find('i').text('done');
-            elem.toggleClass('enabled disabled');
+        if (elemLocation != null) {
+            elemLocation.find('i').text('done');
+            elemLocation.toggleClass('enabled disabled');
         }
     }
-
     function onLocationError(e) {
         alert("Couldn't get your location!");
     }
