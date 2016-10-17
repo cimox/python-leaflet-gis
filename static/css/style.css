@@ -1,7 +1,13 @@
-#map-view {
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html, body, #map-view {
     width: 100%;
-    height: 550px;
-    margin-top: 50px;
+    height: 100%;
+    /*height: 550px;*/
+    /*margin-top: 150px;*/
 }
 
 h1 {
@@ -14,11 +20,7 @@ h1 {
     text-align: center;
 }
 
-.buttons {
-    width: 200px;
-    height: auto;
-    margin: auto;
-}
-
-.buttons a {
+.leaflet-container a {
+    color: white;
+    font-size: small;
 }

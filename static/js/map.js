@@ -24,7 +24,7 @@ $(function () {
     var elem = null;
     locate = function (e) {
         elem = e;
-        elem.text('finding location');
+        elem.find('i').text('loop');
         elem.toggleClass('enabled disabled');
         map.locate({setView: true, maxZoom: 16});
     };
@@ -37,7 +37,7 @@ $(function () {
         L.circle(e.latlng, radius).addTo(map);
 
         if (elem != null) {
-            elem.text('location found');
+            elem.find('i').text('done');
             elem.toggleClass('enabled disabled');
         }
     }
