@@ -3,9 +3,10 @@
  */
 
 $(function () {
+    var map;
     initMap = function () {
         console.log('Map is ready.');
-        var map = L.map('map-view', {
+        map = L.map('map-view', {
             center: [48.7392252, 18.9908871],
             zoom: 10
         });
@@ -14,8 +15,36 @@ $(function () {
             'https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2ltb3giLCJhIjoiY2lnMmR5cTViMDBxanZza2hnMW52bnE4cCJ9.69Gz4ubptFwygdY_zA7c3Q'
         ).addTo(map);
 
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
         return map;
     };
+
+    var elem = null;
+    locate = function (e) {
+        elem = e;
+        elem.text('finding location');
+        elem.toggleClass('enabled disabled');
+        map.locate({setView: true, maxZoom: 16});
+    };
+
+    function onLocationFound(e) {
+        var radius = e.accuracy / 2;
+
+        L.marker(e.latlng).addTo(map)
+            .bindPopup("You're within " + radius + " meters from this point").openPopup();
+        L.circle(e.latlng, radius).addTo(map);
+
+        if (elem != null) {
+            elem.text('location found');
+            elem.toggleClass('enabled disabled');
+        }
+    }
+
+    function onLocationError(e) {
+        alert("Couldn't get your location!");
+    }
 
     getShelters = function (map) {
         console.log('Loading shelters');
