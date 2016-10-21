@@ -26,11 +26,12 @@ def get_nearby(lat, lng, radius) -> object:
     cursor.execute("""\
     SELECT name, ST_Distance(ST_SetSRID(ST_MakePoint({}, {}), 4326)::geography, way::geography) as distance,
                   ST_AsGeoJSON(way) as geometry, ST_Length(way::geography) as length, tracktype
-     FROM hikes
+     FROM planet_osm_line
      WHERE ST_DWithin(ST_SetSRID(ST_MakePoint({}, {}), 4326)::geography, way::geography, {})
      AND ST_Length(way:: GEOGRAPHY) >= 510
+     AND planet_osm_line.route = 'hiking'
      ORDER BY distance
-    """.format(lng, lat, lng, lat, radius))
+    """.format(lng, lat, lng, lat, radius/10))
     features = []  # type: list
 
     for row in cursor.fetchall():
@@ -38,8 +39,7 @@ def get_nearby(lat, lng, radius) -> object:
                 properties={
                     'title': row[0],
                     'distance': row[1],
-                    'length': row[3],
-                    'tracktype': row[4]
+                    'length': int(row[3])
                 },
                 geometry=loads(row[2])
             )
