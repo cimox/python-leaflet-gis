@@ -1,0 +1,16 @@
+-- execute this command
+osm2pgsql slovakia-latest.osm.bz2 -U postgres -d postgres -P 5432 -W -H localhost -l -s
+
+-- create views
+CREATE materialized view hikes AS
+SELECT * FROM planet_osm_line
+WHERE highway LIKE 'track'
+OR highway LIKE 'path'
+AND bicycle NOT LIKE 'yes'
+AND horse NOT LIKE 'yes'
+UNION
+SELECT * FROM planet_osm_roads
+WHERE highway LIKE 'track'
+OR highway LIKE 'path'
+AND bicycle NOT LIKE 'yes'
+AND horse NOT LIKE 'yes'
