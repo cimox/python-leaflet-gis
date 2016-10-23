@@ -31,7 +31,7 @@ def get_nearby(lat, lng, radius) -> object:
      AND ST_Length(way:: GEOGRAPHY) >= 510
      AND planet_osm_line.route = 'hiking'
      ORDER BY distance
-    """.format(lng, lat, lng, lat, radius/10))
+    """.format(lng, lat, lng, lat, radius))
     features = []  # type: list
 
     for row in cursor.fetchall():
