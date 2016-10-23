@@ -8,16 +8,13 @@
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
     <script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/materialize.js') }}"></script>
 
-    <!-- materialize -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.css') }}">
 </head>
 <body>
 <div id="map-view"></div>
-
 <script>
     $(document).ready(function () {
         var map = initMap();
@@ -74,12 +71,33 @@
                 button.style.width = '200px';
 
                 button.onclick = function () {
-                    findNearby();
+                    var radius = $('span.thumb.active span').text() || 25;
+                    findNearby(radius * 100);
                 };
                 return button;
             }
         });
         map.addControl(new btnNearby());
+
+        var sliderNearby = L.Control.extend({
+{#            <input type="range" id="test5" min="0" max="100" />#}
+            options: {
+                position: 'bottomright'
+            },
+            onAdd: function(map) {
+                var slider = L.DomUtil.create('input', 'slider-nearby');
+                slider.type = 'range';
+                slider.min = 0; slider.max = 100;
+
+                slider.onclick = function (e) {
+                    var radius = $('span.thumb.active span').text() || 25;
+                    updateMarker(radius * 100);
+                };
+
+                return slider;
+            }
+        });
+        map.addControl(new sliderNearby());
     });
 </script>
 </body>

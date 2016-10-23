@@ -35,6 +35,10 @@ $(function () {
         return map;
     };
 
+    updateMarker = function (radius) {
+        markerRadius.setRadius(radius);
+    };
+
     var elemLocation = null;
     locate = function (e) {
         elemLocation = e;
@@ -94,9 +98,10 @@ $(function () {
     };
 
     var nearbyTracksLayer = null;
-    findNearby = function () {
+    findNearby = function (radius) {
+        console.log('radius: ' + radius);
         if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
-        $.getJSON('/nearby/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/10000/', function (geojson) {
+        $.getJSON('/nearby/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/' + radius + '/', function (geojson) {
             console.log(geojson);
             nearbyTracksLayer = L.geoJson(geojson, {
                 onEachFeature: function (feature, layer) {
