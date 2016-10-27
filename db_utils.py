@@ -4,16 +4,12 @@ import json
 from geojson import Feature, FeatureCollection, loads
 
 
-
-
 class Postis(object):
-
-    def __init__(self):
-        self.connection = psycopg2.connect(database='postgres', user='postgres', password='postgres',
-                                      port='5432', host='localhost')
+    def __init__(self, user, passw, port, host):
+        self.connection = psycopg2.connect(database='postgres', user=user, password=passw, port=port, host=host)
         self.cursor = self.connection.cursor()
 
-    def _get_shelters(self) -> FeatureCollection:
+    def get_shelters(self) -> FeatureCollection:
         """
         Finds all shelters
         :rtype: FeatureCollection
@@ -31,7 +27,7 @@ class Postis(object):
 
         return FeatureCollection(features)
 
-    def _get_nearby(self, lat: float, lng: float, radius: int) -> FeatureCollection:
+    def get_nearby(self, lat: float, lng: float, radius: int) -> FeatureCollection:
         """
         Return hiking tracks nearby [lat, lng] point within defined radius
         :rtype: FeatureCollection
@@ -63,4 +59,20 @@ class Postis(object):
             )
             )
 
+        return FeatureCollection(features)
+
+    def get_nearby_city(self, radius) -> FeatureCollection:
+        self.cursor.execute((
+            "SELECT line.name, st_asgeojson(line.way) AS geometry, point.name FROM planet_osm_line line JOIN planet_osm_point point ON st_dwithin(point.way :: GEOGRAPHY, line.way :: GEOGRAPHY, {}) = TRUE WHERE line.route = 'hiking' AND st_length(line.way :: GEOGRAPHY) >= 2500 AND ( point.place = 'city' OR point.place = 'town' ) AND line.name IS NOT NULL").format(
+            radius))
+        features = []  # type: list
+
+        for row in self.cursor.fetchall():
+            features.append(Feature(
+                properties={
+                    'title': row[0],
+                    'city': row[2]
+                },
+                geometry=loads(row[1])
+            ))
         return FeatureCollection(features)
