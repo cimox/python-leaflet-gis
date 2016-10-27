@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 
 # Created by https://www.gitignore.io/api/python,pycharm,virtualenv
 
 ### Python ###
-=======
->>>>>>> 23144fb8a0bd1cfbbf1ee4befb7e3ee54d70a555
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -86,10 +83,7 @@ celerybeat-schedule
 .env
 
 # virtualenv
-<<<<<<< HEAD
 .venv/
-=======
->>>>>>> 23144fb8a0bd1cfbbf1ee4befb7e3ee54d70a555
 venv/
 ENV/
 
@@ -98,7 +92,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
-<<<<<<< HEAD
 
 
 ### PyCharm ###
@@ -156,7 +149,6 @@ fabric.properties
 ### VirtualEnv ###
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
-.Python
 [Bb]in
 [Ii]nclude
 [Ll]ib
@@ -166,5 +158,4 @@ fabric.properties
 pyvenv.cfg
 .venv
 pip-selfcheck.json
-=======
->>>>>>> 23144fb8a0bd1cfbbf1ee4befb7e3ee54d70a555
+.idea/dataSources/
