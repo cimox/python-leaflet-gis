@@ -80,7 +80,6 @@
         map.addControl(new btnNearby());
 
         var sliderNearby = L.Control.extend({
-{#            <input type="range" id="test5" min="0" max="100" />#}
             options: {
                 position: 'bottomright'
             },
@@ -98,6 +97,24 @@
             }
         });
         map.addControl(new sliderNearby());
+
+        var btnNearbyCity = L.Control.extend({
+            options: {
+                position: 'topright'
+            },
+            onAdd: function (map) {
+                var button = L.DomUtil.create('a', 'center-align waves-effect waves-light btn enabled');
+                button.text = 'nearby to city';
+                button.style.width = '200px';
+
+                button.onclick = function () {
+                    var radius = $('span.thumb.active span').text() || 25;
+                    findNearbyCity(radius * 100);
+                };
+                return button;
+            }
+        });
+        map.addControl(new btnNearbyCity());
     });
 </script>
 </body>
