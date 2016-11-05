@@ -24,3 +24,6 @@ I've used _osm2pgsql_ to import data to Postgis DB. So, as a DB is used Postgres
 - Map: Leaflet with Mapbox tiles
 - DB: Postgres with Postgis extension
 Data queried from DB are afterwards transformed to geojson format. Geojson format is then used to show lines/points on map using Leaflet.js
+
+##### App screenshot
+![App screenshot](http://oi63.tinypic.com/2mzhu1.jpg)
