@@ -115,6 +115,24 @@
             }
         });
         map.addControl(new btnNearbyCity());
+
+        var btnSpringOnWay = L.Control.extend({
+            options: {
+                position: 'topright'
+            },
+            onAdd: function (map) {
+                var button = L.DomUtil.create('a', 'center-align waves-effect waves-light btn enabled');
+                button.text = 'spring on way';
+                button.style.width = '200px';
+
+                button.onclick = function () {
+                    var radius = $('span.thumb.active span').text() || 25;
+                    findSpringOnWay(radius * 100);
+                };
+                return button;
+            }
+        });
+        map.addControl(new btnSpringOnWay());
     });
 </script>
 </body>

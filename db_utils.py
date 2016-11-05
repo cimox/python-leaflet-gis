@@ -63,11 +63,10 @@ class Postis(object):
     def get_nearby_city(self, position: dict, radius: int, min_length=2500) -> FeatureCollection:
         """
         Returns hiking tracks going nearby city which is closest to position.
-        :param position:
-        :param min_length:
-        :return:
-        :param radius:
-        :return:
+        :param position: lat, lng of current position
+        :param min_length: minimal length of tracks to find in meters
+        :param radius: radius in meters
+        :return: geojson FeatureCollection with tracks nearby city
         """
         self.cursor.execute((
             "SELECT line.name, st_asgeojson(line.way) AS geometry, point.name, ST_Length(line.way::geography) as length"
@@ -93,3 +92,41 @@ class Postis(object):
                 geometry=loads(row[1])
             ))
         return FeatureCollection(features)
+
+    def get_track_with_spring_onway(self, position: dict, radius: int, radius_water: int) -> dict:
+        """
+        Finds hiking tracks with water source on the way.
+        :param position: you current position in lng/lat
+        :param radius: radius within which you want to find hiking tracks around position
+        :param radius_water: how far from found track water source can be
+        :return: geojson FeatureCollection with tracks with water source on the way
+        """
+
+        self.cursor.execute((
+            "SELECT l.name, st_asgeojson(l.way), ST_Length(l.way::geography), p.name, st_asgeojson(p.way) "
+            "FROM planet_osm_line l, planet_osm_point p "
+            "WHERE l.route = 'hiking' "
+            " AND (p.amenity = 'drinking_water' or p.amenity = 'spring')"
+            " AND st_dwithin(l.way :: GEOGRAPHY , p.way :: GEOGRAPHY , {})"
+            " AND ST_DWithin(ST_SetSRID(ST_MakePoint({}, {}), 4326)::geography, l.way::geography, {})"
+            ).format(radius_water, position['lng'], position['lat'], radius))
+
+        features_tracks = []  # type: list
+        features_springs = []  # type: list
+
+        for row in self.cursor.fetchall():
+            features_tracks.append(Feature(
+                properties={
+                    'title': row[0],
+                    'length': int(row[2])
+                },
+                geometry=loads(row[1])
+            ))
+            features_springs.append(Feature(
+                properties={
+                    'title': row[3]
+                },
+                geometry=loads(row[4])
+            ))
+
+        return {'tracks': FeatureCollection(features_tracks), 'springs': FeatureCollection(features_springs)}

@@ -98,9 +98,12 @@ $(function () {
     };
 
     var nearbyTracksLayer = null;
+    var springsLayer = null;
     findNearby = function (radius) {
-        console.log('radius: ' + radius);
+        console.log('Tracks nearby you in radius: ' + radius);
         if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
+        if (springsLayer != null) map.removeLayer(springsLayer);
+
         $.getJSON('/nearby/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/' + radius + '/',
             function (geojson) {
                 console.log(geojson);
@@ -112,8 +115,8 @@ $(function () {
                             opacity: DEFAULT_TRACK_OPACITY,
                             weight: DEFAULT_TRACK_HEIGHT
                         });
-                        layer.bindPopup(title + ' | Length ' + feature.properties.length/1000 + 'km'
-                            + ' | ' + feature.properties.distance/1000 + 'km from you');
+                        layer.bindPopup(title + ' | Length ' + feature.properties.length / 1000 + 'km'
+                            + ' | ' + feature.properties.distance / 1000 + 'km from you');
 
                         layer.on('click', function (event) {
                             layer.setStyle({
@@ -139,8 +142,10 @@ $(function () {
     };
 
     findNearbyCity = function (radius) {
-        console.log('radius: ' + radius);
+        console.log('Finding track nearby city in radius: ' + radius);
         if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
+        if (springsLayer != null) map.removeLayer(springsLayer);
+
         $.getJSON('/nearby-city/' + radius + '/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/',
             function (geojson) {
                 nearbyTracksLayer = L.geoJson(geojson, {
@@ -151,7 +156,8 @@ $(function () {
                             opacity: DEFAULT_TRACK_OPACITY,
                             weight: DEFAULT_TRACK_HEIGHT
                         });
-                        layer.bindPopup(title + ' | ' + feature.properties.length + 'm');
+                        layer.bindPopup(title + ' | ' + feature.properties.length / 1000 + 'km' +
+                            ' | Near to city: ' + feature.properties.city);
 
                         layer.on('click', function (event) {
                             layer.setStyle({
@@ -173,6 +179,70 @@ $(function () {
                 nearbyTracksLayer.addTo(map);
 
                 return nearbyTracksLayer;
+            });
+    };
+
+    findSpringOnWay = function (radius) {
+        console.log('Tracks with springs on the way in radius: ' + radius);
+        if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
+        if (springsLayer != null) map.removeLayer(springsLayer); // TODO: fix this, it doesn't remove old layer
+
+        // add tracks
+        $.getJSON('/spring-onway/' + radius + '/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/500/',
+            function (geojson) {
+                nearbyTracksLayer = L.geoJson(geojson['tracks'], {
+                    onEachFeature: function (feature, layer) {
+                        var title = feature.properties.title || 'Unknown track name';
+                        layer.setStyle({
+                            color: DEFAULT_TRACK_COLOR,
+                            opacity: DEFAULT_TRACK_OPACITY,
+                            weight: DEFAULT_TRACK_HEIGHT
+                        });
+                        layer.bindPopup(title + ' | ' + feature.properties.length / 1000 + 'km');
+
+                        layer.on('click', function (event) {
+                            layer.setStyle({
+                                color: CLICK_TRACK_COLOR,
+                                opacity: CLICK_TRACK_OPACITY,
+                                weight: CLICK_TRACK_HEIGHT
+                            });
+                        });
+
+                        layer.on('popupclose', function () {
+                            layer.setStyle({
+                                color: DEFAULT_TRACK_COLOR,
+                                opacity: DEFAULT_TRACK_OPACITY,
+                                weight: DEFAULT_TRACK_HEIGHT
+                            });
+                        });
+                    }
+                });
+                nearbyTracksLayer.addTo(map);
+
+                var geoJsonMarker = function (title) {
+                    var LeafIcon = L.Icon.extend({
+                        iconSize: [25, 25],
+                        iconAnchor: [25, 25],
+                        popupAnchor: [25, 25]
+                    });
+                    if (title == null) return new LeafIcon({iconUrl: '../static/img/spring-icon-grey.png'});
+                    else return new LeafIcon({iconUrl: '../static/img/spring-icon.png'});
+                };
+
+                L.icon = function (options) {
+                    return new L.Icon(options);
+                };
+                springsLayer = L.geoJson(geojson['springs'], {
+                    pointToLayer: function (feature, latlng) {
+                        hutIcon = geoJsonMarker(feature.properties.title);
+                        return L.marker(latlng, {icon: hutIcon});
+                    }
+                    ,
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(feature.properties.title || 'Unknown');
+                    }
+                });
+                springsLayer.addTo(map);
             });
     };
 });
