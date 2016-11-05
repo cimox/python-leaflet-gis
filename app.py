@@ -29,15 +29,10 @@ def api_nearby_city(lat, lng, radius) -> dict:
     return geojson.dumps(nearby_city)
 
 
-@app.route('/spring-onway/<int:radius>/<float:lat>/<float:lng>/<int:radius_water>/<string:req_type>/', methods=['GET'])
-def api_spring_onway(lat, lng, radius, radius_water, req_type):
+@app.route('/spring-onway/<int:radius>/<float:lat>/<float:lng>/<int:radius_water>/', methods=['GET'])
+def api_spring_onway(lat, lng, radius, radius_water):
     features = db.get_track_with_spring_onway({'lat': lat, 'lng': lng}, radius, radius_water)
-    if req_type == 'tracks':  #TODO: change this so only 1 request is necessary
-        return geojson.dumps(features[0])
-    elif req_type == 'springs':
-        return geojson.dumps(features[1])
-    else:
-        return geojson.dumps('')
+    return geojson.dumps(features)
 
 
 if __name__ == '__main__':

@@ -93,7 +93,7 @@ class Postis(object):
             ))
         return FeatureCollection(features)
 
-    def get_track_with_spring_onway(self, position: dict, radius: int, radius_water: int) -> list:
+    def get_track_with_spring_onway(self, position: dict, radius: int, radius_water: int) -> dict:
         """
         Finds hiking tracks with water source on the way.
         :param position: you current position in lng/lat
@@ -129,4 +129,4 @@ class Postis(object):
                 geometry=loads(row[4])
             ))
 
-        return [FeatureCollection(features_tracks), FeatureCollection(features_springs)]
+        return {'tracks': FeatureCollection(features_tracks), 'springs': FeatureCollection(features_springs)}

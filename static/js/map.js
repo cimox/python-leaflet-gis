@@ -9,7 +9,7 @@ $(function () {
 
     var map, marker, markerRadius;
     var initPosition = [48.7392252, 18.9908871];
-    var initMap = function () {
+    initMap = function () {
         console.log('Map is ready.');
         map = L.map('map-view', {
             center: initPosition,
@@ -35,12 +35,12 @@ $(function () {
         return map;
     };
 
-    var updateMarker = function (radius) {
+    updateMarker = function (radius) {
         markerRadius.setRadius(radius);
     };
 
     var elemLocation = null;
-    var locate = function (e) {
+    locate = function (e) {
         elemLocation = e;
         elemLocation.find('i').text('loop');
         elemLocation.toggleClass('enabled disabled');
@@ -64,7 +64,7 @@ $(function () {
         alert("Couldn't get your location!");
     }
 
-    var getShelters = function (map) {
+    getShelters = function (map) {
         console.log('Loading shelters');
 
         var geoJsonMarker = function (title) {
@@ -99,7 +99,7 @@ $(function () {
 
     var nearbyTracksLayer = null;
     var springsLayer = null;
-    var findNearby = function (radius) {
+    findNearby = function (radius) {
         console.log('Tracks nearby you in radius: ' + radius);
         if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
         if (springsLayer != null) map.removeLayer(springsLayer);
@@ -141,7 +141,7 @@ $(function () {
             });
     };
 
-    var findNearbyCity = function (radius) {
+    findNearbyCity = function (radius) {
         console.log('Finding track nearby city in radius: ' + radius);
         if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
         if (springsLayer != null) map.removeLayer(springsLayer);
@@ -182,15 +182,15 @@ $(function () {
             });
     };
 
-    var findSpringOnWay = function (radius) {
+    findSpringOnWay = function (radius) {
         console.log('Tracks with springs on the way in radius: ' + radius);
         if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
         if (springsLayer != null) map.removeLayer(springsLayer); // TODO: fix this, it doesn't remove old layer
 
         // add tracks
-        $.getJSON('/spring-onway/' + radius + '/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/500/tracks/',
+        $.getJSON('/spring-onway/' + radius + '/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/500/',
             function (geojson) {
-                nearbyTracksLayer = L.geoJson(geojson, {
+                nearbyTracksLayer = L.geoJson(geojson['tracks'], {
                     onEachFeature: function (feature, layer) {
                         var title = feature.properties.title || 'Unknown track name';
                         layer.setStyle({
@@ -219,12 +219,6 @@ $(function () {
                 });
                 nearbyTracksLayer.addTo(map);
 
-                return nearbyTracksLayer;
-            });
-
-        // add springs
-        $.getJSON('/spring-onway/' + radius + '/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/500/springs/',
-            function (geojson) {
                 var geoJsonMarker = function (title) {
                     var LeafIcon = L.Icon.extend({
                         iconSize: [25, 25],
@@ -238,18 +232,17 @@ $(function () {
                 L.icon = function (options) {
                     return new L.Icon(options);
                 };
-                springsLayer = L.geoJson(geojson, {
+                springsLayer = L.geoJson(geojson['springs'], {
                     pointToLayer: function (feature, latlng) {
                         hutIcon = geoJsonMarker(feature.properties.title);
                         return L.marker(latlng, {icon: hutIcon});
-                    },
+                    }
+                    ,
                     onEachFeature: function (feature, layer) {
                         layer.bindPopup(feature.properties.title || 'Unknown');
                     }
                 });
                 springsLayer.addTo(map);
-
-                return springsLayer;
             });
     };
 });
