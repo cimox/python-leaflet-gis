@@ -25,7 +25,7 @@ $(function () {
 
         markerRadius = L.circle(initPosition, 2500)
             .addTo(map);
-        marker.on('drag', function(event) {
+        marker.on('drag', function (event) {
             markerRadius.setLatLng(marker.getLatLng());
         });
 
@@ -101,73 +101,78 @@ $(function () {
     findNearby = function (radius) {
         console.log('radius: ' + radius);
         if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
-        $.getJSON('/nearby/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/' + radius + '/', function (geojson) {
-            console.log(geojson);
-            nearbyTracksLayer = L.geoJson(geojson, {
-                onEachFeature: function (feature, layer) {
-                    var title = feature.properties.title || 'Unknown track name';
-                    layer.setStyle({
-                        color: DEFAULT_TRACK_COLOR,
-                        opacity: DEFAULT_TRACK_OPACITY,
-                        weight: DEFAULT_TRACK_HEIGHT
-                    });
-                    layer.bindPopup(title  + ' | ' + feature.properties.length + 'm');
-
-                    layer.on('click', function (event) {
-                        layer.setStyle({
-                            color: CLICK_TRACK_COLOR,
-                            opacity: CLICK_TRACK_OPACITY,
-                            weight: CLICK_TRACK_HEIGHT
-                        });
-                    });
-
-                    layer.on('popupclose', function () {
+        $.getJSON('/nearby/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/' + radius + '/',
+            function (geojson) {
+                console.log(geojson);
+                nearbyTracksLayer = L.geoJson(geojson, {
+                    onEachFeature: function (feature, layer) {
+                        var title = feature.properties.title || 'Unknown name';
                         layer.setStyle({
                             color: DEFAULT_TRACK_COLOR,
                             opacity: DEFAULT_TRACK_OPACITY,
-                            weight: DEFAULT_TRACK_HEIGHT});
-                    });
-                }
-            });
-            nearbyTracksLayer.addTo(map);
+                            weight: DEFAULT_TRACK_HEIGHT
+                        });
+                        layer.bindPopup(title + ' | Length ' + feature.properties.length/1000 + 'km'
+                            + ' | ' + feature.properties.distance/1000 + 'km from you');
 
-            return nearbyTracksLayer;
-        });
+                        layer.on('click', function (event) {
+                            layer.setStyle({
+                                color: CLICK_TRACK_COLOR,
+                                opacity: CLICK_TRACK_OPACITY,
+                                weight: CLICK_TRACK_HEIGHT
+                            });
+                        });
+
+                        layer.on('popupclose', function () {
+                            layer.setStyle({
+                                color: DEFAULT_TRACK_COLOR,
+                                opacity: DEFAULT_TRACK_OPACITY,
+                                weight: DEFAULT_TRACK_HEIGHT
+                            });
+                        });
+                    }
+                });
+                nearbyTracksLayer.addTo(map);
+
+                return nearbyTracksLayer;
+            });
     };
 
     findNearbyCity = function (radius) {
         console.log('radius: ' + radius);
         if (nearbyTracksLayer != null) map.removeLayer(nearbyTracksLayer);
-        $.getJSON('/nearby-city/' + radius + '/', function (geojson) {
-            nearbyTracksLayer = L.geoJson(geojson, {
-                onEachFeature: function (feature, layer) {
-                    var title = feature.properties.title || 'Unknown track name';
-                    layer.setStyle({
-                        color: DEFAULT_TRACK_COLOR,
-                        opacity: DEFAULT_TRACK_OPACITY,
-                        weight: DEFAULT_TRACK_HEIGHT
-                    });
-                    layer.bindPopup(title  + ' | ' + feature.properties.length + 'm');
-
-                    layer.on('click', function (event) {
-                        layer.setStyle({
-                            color: CLICK_TRACK_COLOR,
-                            opacity: CLICK_TRACK_OPACITY,
-                            weight: CLICK_TRACK_HEIGHT
-                        });
-                    });
-
-                    layer.on('popupclose', function () {
+        $.getJSON('/nearby-city/' + radius + '/' + marker.getLatLng().lat + '/' + marker.getLatLng().lng + '/',
+            function (geojson) {
+                nearbyTracksLayer = L.geoJson(geojson, {
+                    onEachFeature: function (feature, layer) {
+                        var title = feature.properties.title || 'Unknown track name';
                         layer.setStyle({
                             color: DEFAULT_TRACK_COLOR,
                             opacity: DEFAULT_TRACK_OPACITY,
-                            weight: DEFAULT_TRACK_HEIGHT});
-                    });
-                }
-            });
-            nearbyTracksLayer.addTo(map);
+                            weight: DEFAULT_TRACK_HEIGHT
+                        });
+                        layer.bindPopup(title + ' | ' + feature.properties.length + 'm');
 
-            return nearbyTracksLayer;
-        });
+                        layer.on('click', function (event) {
+                            layer.setStyle({
+                                color: CLICK_TRACK_COLOR,
+                                opacity: CLICK_TRACK_OPACITY,
+                                weight: CLICK_TRACK_HEIGHT
+                            });
+                        });
+
+                        layer.on('popupclose', function () {
+                            layer.setStyle({
+                                color: DEFAULT_TRACK_COLOR,
+                                opacity: DEFAULT_TRACK_OPACITY,
+                                weight: DEFAULT_TRACK_HEIGHT
+                            });
+                        });
+                    }
+                });
+                nearbyTracksLayer.addTo(map);
+
+                return nearbyTracksLayer;
+            });
     };
 });

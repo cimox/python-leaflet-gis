@@ -23,9 +23,9 @@ def api_nearby(lat, lng, radius) -> dict:
     return geojson.dumps(nearby_tracks)
 
 
-@app.route('/nearby-city/<int:radius>/', methods=['GET'])
-def api_nearby_city(radius) -> dict:
-    nearby_city = db.get_nearby_city(radius)
+@app.route('/nearby-city/<int:radius>/<float:lat>/<float:lng>/', methods=['GET'])
+def api_nearby_city(lat, lng, radius) -> dict:
+    nearby_city = db.get_nearby_city({'lat': lat, 'lng': lng}, radius)
     return geojson.dumps(nearby_city)
 
 
