@@ -36,4 +36,4 @@ def api_spring_onway(lat, lng, radius, radius_water):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
