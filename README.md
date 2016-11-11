@@ -8,7 +8,7 @@ School coursework. GIS web app for finding tourist tracks and areas of interest.
 ##### Application description
 Web and mobile application where you can find hiking tracks nearby your current position. Or you can drag-and-drop pointer and find tracks somewhere else on the map. You can show all hiking shelters in Slovakia. You can find tracks going nearby city which is in your radius. You can find tracks with water source in the way. All the searched tracks are fetched within radius (can be adjusted) within your current position.
 
-Data queried from DB are returned as geojson using Postgis function _ST_AsGeojson_. If returned data is not a single geojson record, its need to be transformed to geojson _FeatureCollection_, this is done on backend. Through api then application frontend can request desired data, e.g. _FeatureCollection_ of all hiking shelters in Slovakia.
+Data queried from DB are returned as geojson using Postgis function _ST_AsGeojson_. If returned data is not a single geojson record, it needs to be transformed to geojson _FeatureCollection_, this is done on backend. Application frontend can then through api request desired data, e.g. _FeatureCollection_ of all hiking shelters in Slovakia. Response (e.g. geojson _FeatureCollection_) from api route is then visualized on map using _Leaflet.js_ methods.
 
 ##### Functions overview
 - [x] find all shelters
