@@ -36,3 +36,13 @@ Data queried from DB are returned as geojson using Postgis function _ST_AsGeojso
 
 ##### App screenshot
 
+**Hike trails with spring on the way**
+![Hike trails with spring on the way](https://github.com/cimox/python-leaflet-gis/blob/master/screenshots/hike-trails-with-spring-on-the-way.png)
+
+
+**Show all hiking shelters**
+![Show all hiking shelters](https://github.com/cimox/python-leaflet-gis/blob/master/screenshots/show-all-hiking-shelters.png)
+
+
+**Show nearby hike trails**
+![Show nearby hike trails](https://github.com/cimox/python-leaflet-gis/blob/master/screenshots/show-nearby-hike-trails.png)
