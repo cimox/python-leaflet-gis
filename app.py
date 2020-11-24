@@ -6,6 +6,7 @@ from flask import Flask, render_template
 app = Flask(__name__)
 db = Postis('postgres', 'postgres', 5432, 'localhost')
 
+
 @app.route('/')
 def hello_world() -> object:
     return render_template('index.html')
